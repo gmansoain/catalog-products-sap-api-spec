@@ -1,0 +1,12 @@
+{
+  "productDescription": "Bose QuietComfort Ultra",
+  "productCategory": "Camera",
+  "imagePath": "images/bose_qc_ultra.png",
+  "unitPrice": 429.99,
+  "currency": "EUR",
+  "brand": "Bose",
+  "longDescription": "Over-ear noise-cancelling headphones with immersive spatial audio.",
+  "weightKg": 0.25,
+  "warrantyMonths": 24,
+  "isActive": true
+}

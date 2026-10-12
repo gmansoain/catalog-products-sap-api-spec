@@ -1,0 +1,16 @@
+{
+  "errorCategory": "VALIDATION_ERROR",
+  "errorCode": "CTLG-VAL-004",
+  "message": "The request Content-Type is not supported.",
+  "correlationId": "a7b8c9d0-e1f2-4345-0123-678901234567",
+  "timestamp": "2026-10-10T15:27:51Z",
+  "details": [
+    {
+      "fieldName": "Content-Type",
+      "reason": "This API only accepts application/json on write operations.",
+      "expectedValue": "application/json",
+      "actualValue": "text/plain",
+      "context": "HTTP request header"
+    }
+  ]
+}

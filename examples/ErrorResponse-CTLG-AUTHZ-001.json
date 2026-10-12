@@ -1,0 +1,7 @@
+{
+  "errorCategory": "AUTHORIZATION_ERROR",
+  "errorCode": "CTLG-AUTHZ-001",
+  "message": "Operation not permitted.",
+  "correlationId": "e1f2a3b4-c5d6-4789-4567-012345678901",
+  "timestamp": "2026-10-11T09:19:55Z"
+}

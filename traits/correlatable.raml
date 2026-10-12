@@ -1,0 +1,22 @@
+#%RAML 1.0 Trait
+displayName: Correlatable
+description: |
+  Optional end-to-end tracing header. When the caller supplies a valid
+  `X-Correlation-Id` (RFC 4122 v4 UUID) it is propagated to every downstream
+  hop and echoed back on the response. When the header is omitted, the API
+  generates a fresh UUID at the entry flow and returns it in the response
+  header so the caller can pick it up.
+
+  Malformed values (present but not a v4 UUID) are rejected with `400` via
+  the standard error envelope declared by the `hasErrors` trait.
+headers:
+  X-Correlation-Id:
+    displayName: Correlation ID
+    description: |
+      RFC 4122 v4 UUID identifying the request across every downstream hop.
+      Echoed back on the response and included in every log line. If omitted,
+      the API generates one and returns it.
+    type: string
+    pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    required: false
+    example: 5f9c2e1a-3b8d-4f7e-9a1c-2d4e6f8a0b3c

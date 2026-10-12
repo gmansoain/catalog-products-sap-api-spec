@@ -1,0 +1,15 @@
+{
+  "errorCategory": "BUSINESS_RULE_VIOLATION",
+  "errorCode": "CTLG-BUS-002",
+  "message": "Database constraint violation.",
+  "correlationId": "b4c5d6e7-f8a9-4012-7890-345678901234",
+  "timestamp": "2026-10-11T12:59:43Z",
+  "details": [
+    {
+      "fieldName": "productId",
+      "reason": "Cannot hard-delete product referenced by existing order_items (FK order_items.product_id -> products.id).",
+      "actualValue": "PROD-000005",
+      "context": "Foreign key constraint fk_order_items_product"
+    }
+  ]
+}

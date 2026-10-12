@@ -1,0 +1,7 @@
+{
+  "errorCategory": "DEPENDENCY_FAILURE",
+  "errorCode": "CTLG-DEP-001",
+  "message": "Database temporarily unavailable.",
+  "correlationId": "e7f8a9b0-c1d2-4345-0123-678901234567",
+  "timestamp": "2026-10-11T16:39:31Z"
+}

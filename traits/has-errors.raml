@@ -1,0 +1,120 @@
+#%RAML 1.0 Trait
+displayName: Standard Error Responses
+description: |
+  Attaches the standard 4xx/5xx error responses every operation on this
+  API can return. Applied at resource level so all methods inherit them
+  without restating. See `docs/error-handling-strategy.md` for the full
+  envelope, taxonomy, and code catalog; `documentation/errors.md` for
+  this API's SAP-tier code list.
+
+  Each response body uses an `examples:` map — one entry per `errorCode`
+  variant that can produce that HTTP status. Consumers can refer to the
+  example key (e.g. `missingField`) to see the shape expected for that
+  specific code.
+responses:
+  400:
+    description: |
+      Validation failure (`CTLG-VAL-001`). `details[]` carries one or
+      more field-level entries.
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          missingField:    !include ../examples/ErrorResponse-CTLG-VAL-001-missing-field.json
+          invalidType:     !include ../examples/ErrorResponse-CTLG-VAL-001-invalid-type.json
+          invalidEnum:     !include ../examples/ErrorResponse-CTLG-VAL-001-invalid-enum.json
+          invalidPattern:  !include ../examples/ErrorResponse-CTLG-VAL-001-invalid-pattern.json
+  401:
+    description: Missing or invalid `client_id` / `client_secret` (`CTLG-AUTH-001`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          unauthenticated: !include ../examples/ErrorResponse-CTLG-AUTH-001.json
+  403:
+    description: |
+      Credentials are valid but the consumer's contract does not grant
+      access to this resource or operation (`CTLG-AUTHZ-001`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          forbidden: !include ../examples/ErrorResponse-CTLG-AUTHZ-001.json
+  404:
+    description: |
+      Route-level 404 (`CTLG-RES-000`) when the request path is not
+      defined on this API; business-level 404 (`CTLG-RES-001`) when
+      the request path is defined but the specific product does not
+      exist (including soft-deleted products).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          routeNotFound:   !include ../examples/ErrorResponse-CTLG-RES-000.json
+          productNotFound: !include ../examples/ErrorResponse-CTLG-RES-001.json
+  405:
+    description: The HTTP method is not supported on this resource (`CTLG-VAL-002`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          methodNotAllowed: !include ../examples/ErrorResponse-CTLG-VAL-002.json
+  406:
+    description: The requested media type cannot be produced (`CTLG-VAL-003`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          notAcceptable: !include ../examples/ErrorResponse-CTLG-VAL-003.json
+  409:
+    description: |
+      Business-rule violation (`CTLG-BUS-001`) — a state transition
+      inconsistent with the current resource state (e.g. deactivating an
+      already-inactive product). Or database constraint violation
+      (`CTLG-BUS-002`) — foreign key, unique, or check constraint failed.
+      `details[]` carries the specific reason.
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          alreadyInactive: !include ../examples/ErrorResponse-CTLG-BUS-001-already-inactive.json
+          softDeleted:     !include ../examples/ErrorResponse-CTLG-BUS-001-soft-deleted.json
+          fkViolation:     !include ../examples/ErrorResponse-CTLG-BUS-002-fk-violation.json
+          uniqueViolation: !include ../examples/ErrorResponse-CTLG-BUS-002-unique-violation.json
+          checkViolation:  !include ../examples/ErrorResponse-CTLG-BUS-002-check-violation.json
+  415:
+    description: The request `Content-Type` is not supported (`CTLG-VAL-004`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          unsupportedMediaType: !include ../examples/ErrorResponse-CTLG-VAL-004.json
+  500:
+    description: |
+      Internal error (`CTLG-SYS-001`) — typically a non-constraint SQL
+      error or an unhandled branch. Or unknown/catch-all (`CTLG-UNK-001`)
+      — the central handler did not recognize the underlying Mule error
+      type; fires alerts for investigation.
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          internalError: !include ../examples/ErrorResponse-CTLG-SYS-001.json
+          unknownError:  !include ../examples/ErrorResponse-CTLG-UNK-001.json
+  501:
+    description: A documented operation is not yet implemented (`CTLG-SYS-002`).
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          notImplemented: !include ../examples/ErrorResponse-CTLG-SYS-002.json
+  503:
+    description: |
+      The SAP dependency is unavailable (`CTLG-DEP-001`). Consult
+      `/ready` for dependency detail. In this demo, SAP is simulated by
+      the `ecommerce_sap` MySQL schema.
+    body:
+      application/json:
+        type: ErrorResponse
+        examples:
+          dependencyFailure: !include ../examples/ErrorResponse-CTLG-DEP-001.json

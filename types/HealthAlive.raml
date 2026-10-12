@@ -1,0 +1,35 @@
+#%RAML 1.0 DataType
+displayName: Health — Alive
+description: |
+  Liveness response returned by `GET /alive`. Signals that the application
+  process is running. Does not exercise any downstream dependency.
+type: object
+additionalProperties: false
+properties:
+  apiName:
+    displayName: API Name
+    description: Asset identifier of this API.
+    type: string
+    example: catalog-products-sap-api
+  apiVersion:
+    displayName: API Version
+    description: Semantic version of the running spec.
+    type: string
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    example: 1.0.0
+  runtime:
+    displayName: Runtime
+    description: Version of the Mule runtime hosting the app.
+    type: string
+    example: 4.4.0
+  status:
+    displayName: Status
+    description: Always `OK` when the process is able to serve this endpoint.
+    type: string
+    enum: [OK]
+    example: OK
+  timeStamp:
+    displayName: Timestamp
+    description: ISO 8601 UTC instant the response was generated.
+    type: datetime
+    example: 2026-09-19T06:12:02.436Z

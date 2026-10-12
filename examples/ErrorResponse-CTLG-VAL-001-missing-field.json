@@ -1,0 +1,15 @@
+{
+  "errorCategory": "VALIDATION_ERROR",
+  "errorCode": "CTLG-VAL-001",
+  "message": "Request body is invalid.",
+  "correlationId": "a1b2c3d4-e5f6-4789-abcd-ef0123456789",
+  "timestamp": "2026-10-10T09:14:22Z",
+  "details": [
+    {
+      "fieldName": "productDescription",
+      "reason": "Required field is missing.",
+      "expectedValue": "non-empty string, max 200 chars",
+      "context": "Request body"
+    }
+  ]
+}

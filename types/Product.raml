@@ -1,0 +1,104 @@
+#%RAML 1.0 DataType
+displayName: Product
+description: |
+  Canonical product master record as held in SAP and mirrored in the
+  `ecommerce_sap.products` MySQL table. Field names are the camelCase form
+  of the raw DB columns — Process APIs are responsible for renaming to
+  consumer-facing vocabulary (`productName`, `imageUrl`, `price` object,
+  etc.).
+type: object
+additionalProperties: false
+properties:
+  productId:
+    displayName: Product ID
+    description: SAP master product identifier. Format `PROD-<6 digits>`.
+    type: string
+    pattern: '^PROD-[0-9]{6}$'
+    example: PROD-000001
+  productDescription:
+    displayName: Product Description
+    description: Short marketing description of the product (SAP `product_description`).
+    type: string
+    minLength: 1
+    maxLength: 200
+    example: Sony Playstation 5
+  productCategory:
+    displayName: Product Category
+    description: SAP product category (`product_category`).
+    type: !include ProductCategory.raml
+    example: Games Console
+  imagePath:
+    displayName: Image Path
+    description: |
+      Relative path to the product image as stored in SAP (`image_path`).
+      Not a fully-qualified URL — the Experience API rewrites this into
+      an absolute `imageUrl` before exposing it to the storefront.
+    type: string
+    minLength: 1
+    maxLength: 500
+    example: images/playstation_5.png
+  unitPrice:
+    displayName: Unit Price
+    description: Unit list price as held in SAP (`unit_price`). Two decimal places.
+    type: number
+    format: double
+    minimum: 0
+    example: 499.99
+  currency:
+    displayName: Currency
+    description: |
+      ISO 4217 currency code (`currency`). Base currency for the storefront
+      is `EUR`; other codes are accepted for imports but the storefront
+      renders prices in euros.
+    type: string
+    pattern: '^[A-Z]{3}$'
+    default: EUR
+    example: EUR
+  brand:
+    displayName: Brand
+    description: Manufacturer or brand name (`brand`). Optional.
+    type: string
+    maxLength: 50
+    required: false
+    example: Sony
+  longDescription:
+    displayName: Long Description
+    description: Extended marketing copy (`long_description`). Optional.
+    type: string
+    required: false
+    example: |
+      Next-gen gaming console with ultra-high-speed SSD, 4K graphics and
+      haptic-feedback DualSense controller.
+  weightKg:
+    displayName: Weight (kg)
+    description: Shipping weight in kilograms (`weight_kg`). Optional.
+    type: number
+    format: double
+    minimum: 0
+    required: false
+    example: 4.5
+  warrantyMonths:
+    displayName: Warranty (months)
+    description: Manufacturer warranty duration in months (`warranty_months`). Defaults to 24.
+    type: integer
+    minimum: 0
+    default: 24
+    required: false
+    example: 12
+  isActive:
+    displayName: Is Active
+    description: |
+      `true` when the product is available for sale. Soft-deleted products
+      keep the record but flip this flag to `false`.
+    type: boolean
+    example: true
+  createdAt:
+    displayName: Created At
+    description: ISO 8601 UTC timestamp the record was first inserted (`created_at`).
+    type: datetime
+    example: 2026-09-01T09:14:22Z
+  updatedAt:
+    displayName: Updated At
+    description: ISO 8601 UTC timestamp of the last modification (`updated_at`).
+    type: datetime
+    example: 2026-09-15T10:22:47Z

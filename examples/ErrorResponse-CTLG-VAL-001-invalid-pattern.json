@@ -1,0 +1,16 @@
+{
+  "errorCategory": "VALIDATION_ERROR",
+  "errorCode": "CTLG-VAL-001",
+  "message": "Request body is invalid.",
+  "correlationId": "d4e5f6a7-b8c9-4012-def0-345678901234",
+  "timestamp": "2026-10-10T12:48:03Z",
+  "details": [
+    {
+      "fieldName": "productId",
+      "reason": "Must match pattern PROD-NNNNNN.",
+      "expectedValue": "PROD- followed by 6 digits",
+      "actualValue": "12345",
+      "context": "URL path parameter"
+    }
+  ]
+}

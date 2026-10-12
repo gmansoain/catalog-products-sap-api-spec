@@ -1,0 +1,75 @@
+#%RAML 1.0 DataType
+displayName: Error Response
+description: |
+  Standard error envelope returned on every 4xx/5xx response. Field
+  semantics are defined once in the project-wide error-handling strategy
+  (see `docs/error-handling-strategy.md` §3) and apply uniformly across
+  all three API tiers (SAP System, Products Process, Mobile Experience).
+
+  Treat `errorCategory` and `errorCode` as the stable machine-readable
+  contract; `message` is human-readable and may evolve between releases.
+type: object
+additionalProperties: false
+properties:
+  errorCategory:
+    displayName: Error Category
+    description: |
+      Long-form category. One of ten canonical categories; the specific
+      sub-type within the category is identified by `errorCode`.
+    type: string
+    enum:
+      - VALIDATION_ERROR
+      - AUTHENTICATION_ERROR
+      - AUTHORIZATION_ERROR
+      - RESOURCE_NOT_FOUND
+      - BUSINESS_RULE_VIOLATION
+      - DEPENDENCY_FAILURE
+      - NETWORK_ERROR
+      - SYSTEM_ERROR
+      - SECURITY_VIOLATION
+      - UNKNOWN_ERROR
+    example: VALIDATION_ERROR
+  errorCode:
+    displayName: Error Code
+    description: |
+      Stable machine-readable code in the format `<DOMAIN>-<CATEGORY>-NNN`.
+      For this API the `DOMAIN` is `CTLG` (catalog) in v1; v2 adds `ORDR`
+      (orders). Use for programmatic handling. See `documentation/errors.md`
+      for the full catalog of codes this API can emit.
+    type: string
+    pattern: ^[A-Z]{3,6}-[A-Z]{3,5}-\d{3}$
+    example: CTLG-VAL-001
+  message:
+    displayName: Message
+    description: |
+      Human-readable summary. May change between releases — do not parse.
+      Templates are owned by the central error handler and keyed on
+      `errorCode`.
+    type: string
+    example: Request body is invalid.
+  correlationId:
+    displayName: Correlation ID
+    description: |
+      UUID that ties this response to every log line emitted during the
+      request's lifetime. Echoes the request `X-Correlation-Id` when
+      supplied; auto-generated at API entry otherwise. Quote this in
+      support tickets.
+    type: string
+    example: 5f9c2e1a-3b8d-4f7e-9a1c-2d4e6f8a0b3c
+  timestamp:
+    displayName: Timestamp
+    description: ISO 8601 UTC instant the error was generated.
+    type: datetime
+    format: rfc3339
+    example: 2026-10-09T14:32:11.428Z
+  details:
+    displayName: Details
+    description: |
+      Field-level or contextual breakdown of the error. Populated for
+      `VALIDATION_ERROR` and some `BUSINESS_RULE_VIOLATION` codes;
+      omitted entirely for categories that are not field-level
+      (`RESOURCE_NOT_FOUND`, `AUTHENTICATION_ERROR`,
+      `AUTHORIZATION_ERROR`, `DEPENDENCY_FAILURE`, `SYSTEM_ERROR`,
+      `UNKNOWN_ERROR`).
+    type: ErrorDetail[]
+    required: false

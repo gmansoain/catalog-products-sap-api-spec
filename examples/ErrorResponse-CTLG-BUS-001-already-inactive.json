@@ -1,0 +1,16 @@
+{
+  "errorCategory": "BUSINESS_RULE_VIOLATION",
+  "errorCode": "CTLG-BUS-001",
+  "message": "Business rule violation.",
+  "correlationId": "f2a3b4c5-d6e7-4890-5678-123456789012",
+  "timestamp": "2026-10-11T10:33:11Z",
+  "details": [
+    {
+      "fieldName": "isActive",
+      "reason": "Product PROD-000005 is already deactivated; cannot deactivate twice.",
+      "expectedValue": "true (currently active product)",
+      "actualValue": "false",
+      "context": "Current resource state"
+    }
+  ]
+}

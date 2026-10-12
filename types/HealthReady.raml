@@ -1,0 +1,53 @@
+#%RAML 1.0 DataType
+displayName: Health — Ready
+description: |
+  Readiness response returned by `GET /ready`. Aggregates the status of every
+  critical downstream dependency into an overall `status` value.
+
+  At v1 this API has a single dependency (`SAP`, simulated in the demo by
+  the `ecommerce_sap` MySQL schema), so the aggregate can only be `OK` or
+  `OFFLINE`. `DEGRADED` is defined in the enum for forward compatibility —
+  once additional dependencies are added, a mix of `UP` and `DOWN` will
+  emit `DEGRADED`.
+
+  Status mapping:
+    - `OK`       — every dependency is `UP`.
+    - `DEGRADED` — some dependencies are `DOWN`, others `UP`; the API can
+                   still serve reduced functionality. Not emitted at v1.
+    - `OFFLINE`  — every critical dependency is `DOWN`; the API cannot serve
+                   business requests.
+type: object
+additionalProperties: false
+properties:
+  apiName:
+    displayName: API Name
+    type: string
+    example: catalog-products-sap-api
+  apiVersion:
+    displayName: API Version
+    type: string
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    example: 1.0.0
+  dependencies:
+    displayName: Dependencies
+    description: Health of each critical downstream dependency.
+    type: array
+    minItems: 1
+    # HealthDependency is defined inline in api.raml (recursive type — see the
+    # comment there). Referenced here by type name so this fragment resolves
+    # against the api.raml `types:` namespace when included.
+    items: HealthDependency
+  runtime:
+    displayName: Runtime
+    type: string
+    example: 4.4.0
+  status:
+    displayName: Overall Status
+    description: Aggregated status across the `dependencies[]` array.
+    type: string
+    enum: [OK, DEGRADED, OFFLINE]
+    example: OK
+  timeStamp:
+    displayName: Timestamp
+    type: datetime
+    example: 2026-09-19T06:12:06.978Z

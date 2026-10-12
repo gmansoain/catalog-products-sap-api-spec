@@ -1,0 +1,80 @@
+#%RAML 1.0 DataType
+displayName: Product Create Request
+description: |
+  Payload for creating a new product record in SAP. `productId` is optional —
+  when omitted, the DB trigger assigns the next `PROD-XXXXXX` identifier.
+  All other required fields must be supplied.
+type: object
+additionalProperties: false
+properties:
+  productId:
+    displayName: Product ID
+    description: |
+      Optional. Supply when importing/migrating with an existing SAP
+      identifier. Format `PROD-<6 digits>`. If omitted, the backend
+      assigns the next available identifier.
+    type: string
+    pattern: '^PROD-[0-9]{6}$'
+    required: false
+    example: PROD-000013
+  productDescription:
+    displayName: Product Description
+    type: string
+    minLength: 1
+    maxLength: 200
+    example: Bose QuietComfort Ultra
+  productCategory:
+    displayName: Product Category
+    type: !include ProductCategory.raml
+    example: Camera
+  imagePath:
+    displayName: Image Path
+    type: string
+    minLength: 1
+    maxLength: 500
+    example: images/bose_qc_ultra.png
+  unitPrice:
+    displayName: Unit Price
+    type: number
+    format: double
+    minimum: 0
+    example: 429.99
+  currency:
+    displayName: Currency
+    description: ISO 4217 currency code. Defaults to `EUR` (storefront base currency).
+    type: string
+    pattern: '^[A-Z]{3}$'
+    default: EUR
+    required: false
+    example: EUR
+  brand:
+    displayName: Brand
+    type: string
+    maxLength: 50
+    required: false
+    example: Bose
+  longDescription:
+    displayName: Long Description
+    type: string
+    required: false
+    example: Over-ear noise-cancelling headphones with immersive spatial audio.
+  weightKg:
+    displayName: Weight (kg)
+    type: number
+    format: double
+    minimum: 0
+    required: false
+    example: 0.25
+  warrantyMonths:
+    displayName: Warranty (months)
+    type: integer
+    minimum: 0
+    default: 24
+    required: false
+    example: 24
+  isActive:
+    displayName: Is Active
+    type: boolean
+    default: true
+    required: false
+    example: true

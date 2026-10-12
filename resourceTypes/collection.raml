@@ -1,0 +1,9 @@
+#%RAML 1.0 ResourceType
+displayName: Collection
+description: |
+  A read/write collection of `<<resourcePathName | !singularize>>` items.
+  Applied to top-level resource paths that expose list and create semantics.
+get:
+  description: List <<resourcePathName>>.
+post:
+  description: Create a new <<resourcePathName | !singularize>>.

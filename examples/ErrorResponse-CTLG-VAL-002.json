@@ -1,0 +1,16 @@
+{
+  "errorCategory": "VALIDATION_ERROR",
+  "errorCode": "CTLG-VAL-002",
+  "message": "The HTTP method is not supported on this resource.",
+  "correlationId": "e5f6a7b8-c9d0-4123-ef01-456789012345",
+  "timestamp": "2026-10-10T13:01:19Z",
+  "details": [
+    {
+      "fieldName": "method",
+      "reason": "PATCH is not supported on the /products collection endpoint; use PATCH on /products/{productId} instead.",
+      "expectedValue": "GET or POST",
+      "actualValue": "PATCH",
+      "context": "HTTP request method"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "main": "api.raml",
+  "assetId": "catalog-products-sap-api",
+  "version": "1.0.0",
+  "apiVersion": "v1",
+  "name": "Catalog Products SAP System API",
+  "classifier": "raml",
+  "tags": [
+    "system-api",
+    "sync",
+    "internal",
+    "stable",
+    "sla-silver",
+    "data-internal",
+    "auth-mulesoft-client-id"
+  ],
+  "categories": {
+    "Business Domain": ["catalog"]
+  }
+}

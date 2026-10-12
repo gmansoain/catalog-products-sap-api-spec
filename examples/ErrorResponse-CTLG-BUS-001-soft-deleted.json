@@ -1,0 +1,15 @@
+{
+  "errorCategory": "BUSINESS_RULE_VIOLATION",
+  "errorCode": "CTLG-BUS-001",
+  "message": "Business rule violation.",
+  "correlationId": "a3b4c5d6-e7f8-4901-6789-234567890123",
+  "timestamp": "2026-10-11T11:46:27Z",
+  "details": [
+    {
+      "fieldName": "productId",
+      "reason": "Product PROD-000005 is soft-deleted; reactivate it before applying updates.",
+      "actualValue": "PROD-000005 (isActive=false)",
+      "context": "Current resource state"
+    }
+  ]
+}

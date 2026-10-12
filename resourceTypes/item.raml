@@ -1,0 +1,13 @@
+#%RAML 1.0 ResourceType
+displayName: Item
+description: |
+  A single `<<resourcePathName | !singularize>>` resource addressed by its
+  identifier. Exposes get/put/patch/delete semantics.
+get:
+  description: Get a single <<resourcePathName | !singularize>>.
+put:
+  description: Replace a <<resourcePathName | !singularize>> in full.
+patch:
+  description: Update a <<resourcePathName | !singularize>> partially.
+delete:
+  description: Delete a <<resourcePathName | !singularize>>.

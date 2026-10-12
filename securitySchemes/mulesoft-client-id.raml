@@ -1,0 +1,37 @@
+#%RAML 1.0 SecurityScheme
+displayName: MuleSoft Client ID Enforcement
+description: |
+  Consumers authenticate by presenting the `client_id` and `client_secret`
+  issued when their contract against this API was approved in Anypoint
+  Exchange. Enforced by the API Manager Client ID Enforcement policy.
+
+  This is the org-standard scheme for Process and System APIs. There is no
+  token exchange — credentials are sent on every request.
+type: Pass Through
+describedBy:
+  headers:
+    client_id:
+      displayName: Client ID
+      description: The consumer's `client_id` as issued in Anypoint Exchange.
+      type: string
+      example: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
+    client_secret:
+      displayName: Client Secret
+      description: The consumer's `client_secret` as issued in Anypoint Exchange.
+      type: string
+      example: 9f8e7d6c5b4a39281706f5e4d3c2b1a0
+  responses:
+    401:
+      description: Missing or invalid `client_id` / `client_secret`.
+      body:
+        application/json:
+          type: !include ../types/ErrorResponse.raml
+          example: !include ../examples/ErrorResponse-CTLG-AUTH-001.json
+    403:
+      description: |
+        Credentials are valid but the consumer's contract does not grant
+        access to this resource or operation.
+      body:
+        application/json:
+          type: !include ../types/ErrorResponse.raml
+          example: !include ../examples/ErrorResponse-CTLG-AUTHZ-001.json

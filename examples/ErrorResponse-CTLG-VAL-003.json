@@ -1,0 +1,16 @@
+{
+  "errorCategory": "VALIDATION_ERROR",
+  "errorCode": "CTLG-VAL-003",
+  "message": "The requested media type cannot be produced.",
+  "correlationId": "f6a7b8c9-d0e1-4234-f012-567890123456",
+  "timestamp": "2026-10-10T14:14:35Z",
+  "details": [
+    {
+      "fieldName": "Accept",
+      "reason": "This API only produces application/json.",
+      "expectedValue": "application/json",
+      "actualValue": "application/xml",
+      "context": "HTTP request header"
+    }
+  ]
+}

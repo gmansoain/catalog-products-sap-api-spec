@@ -1,0 +1,7 @@
+{
+  "errorCategory": "RESOURCE_NOT_FOUND",
+  "errorCode": "CTLG-RES-000",
+  "message": "The requested resource does not exist.",
+  "correlationId": "b8c9d0e1-f2a3-4456-1234-789012345678",
+  "timestamp": "2026-10-10T16:40:07Z"
+}

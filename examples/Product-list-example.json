@@ -1,0 +1,47 @@
+[
+  {
+    "productId": "PROD-000001",
+    "productDescription": "Sony Playstation 5",
+    "productCategory": "Games Console",
+    "imagePath": "images/playstation_5.png",
+    "unitPrice": 499.99,
+    "currency": "EUR",
+    "brand": "Sony",
+    "longDescription": "Next-gen gaming console with ultra-high-speed SSD, 4K graphics and haptic-feedback DualSense controller.",
+    "weightKg": 4.50,
+    "warrantyMonths": 12,
+    "isActive": true,
+    "createdAt": "2026-09-01T09:14:22Z",
+    "updatedAt": "2026-09-15T10:22:47Z"
+  },
+  {
+    "productId": "PROD-000005",
+    "productDescription": "LG TV",
+    "productCategory": "Television",
+    "imagePath": "images/lg_tv.png",
+    "unitPrice": 799.99,
+    "currency": "EUR",
+    "brand": "LG",
+    "longDescription": "55-inch 4K UHD smart TV with HDR10, WebOS and voice-controlled remote.",
+    "weightKg": 15.00,
+    "warrantyMonths": 24,
+    "isActive": true,
+    "createdAt": "2026-09-01T09:14:22Z",
+    "updatedAt": "2026-09-01T09:14:22Z"
+  },
+  {
+    "productId": "PROD-000012",
+    "productDescription": "iPhone 14",
+    "productCategory": "Smartphone",
+    "imagePath": "images/iphone_14.png",
+    "unitPrice": 999.99,
+    "currency": "EUR",
+    "brand": "Apple",
+    "longDescription": "Apple flagship with A15 Bionic chip, Super Retina XDR display and advanced dual-camera system.",
+    "weightKg": 0.17,
+    "warrantyMonths": 24,
+    "isActive": true,
+    "createdAt": "2026-09-01T09:14:22Z",
+    "updatedAt": "2026-09-01T09:14:22Z"
+  }
+]

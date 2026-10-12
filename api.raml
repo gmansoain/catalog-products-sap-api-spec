@@ -1,0 +1,347 @@
+#%RAML 1.0
+title: Catalog Products SAP System API
+version: v1
+baseUri: http://{environment}.api.leno.com/catalog-products-sap/{version}
+baseUriParameters:
+  environment:
+    description: Target environment (dev, sit, uat, prod).
+    enum: [dev, sit, uat, prod]
+    example: prod
+
+mediaType: application/json
+protocols: [HTTP]
+
+description: |
+  System-layer adapter over the SAP ERP product master and its supporting
+  MySQL persistence (`ecommerce_sap` schema). Exposes CRUD operations on
+  the raw canonical product record so downstream Process APIs (Products,
+  Pricing, Inventory) can compose experience-shaped payloads without
+  binding to the underlying SAP tables.
+  Consumed exclusively by internal Mule Process APIs — not exposed to
+  external consumers or client channels.
+
+documentation:
+  - title: Overview
+    content: !include documentation/overview.md
+  - title: Getting Started
+    content: !include documentation/getting-started.md
+  - title: Authentication
+    content: !include documentation/authentication.md
+  - title: Environments
+    content: !include documentation/environments.md
+  - title: Errors
+    content: !include documentation/errors.md
+  - title: Changelog
+    content: !include documentation/changelog.md
+  - title: Support
+    content: !include documentation/support.md
+
+securitySchemes:
+  mulesoftClientId: !include securitySchemes/mulesoft-client-id.raml
+
+securedBy: [mulesoftClientId]
+
+traits:
+  correlatable: !include traits/correlatable.raml
+  paginated: !include traits/paginated.raml
+  hasErrors: !include traits/has-errors.raml
+
+resourceTypes:
+  collection: !include resourceTypes/collection.raml
+  item: !include resourceTypes/item.raml
+
+types:
+  Product:               !include types/Product.raml
+  ProductCreateRequest:  !include types/ProductCreateRequest.raml
+  ProductUpdateRequest:  !include types/ProductUpdateRequest.raml
+  ProductPatchRequest:   !include types/ProductPatchRequest.raml
+  ProductCategory:       !include types/ProductCategory.raml
+  ErrorDetail:           !include types/ErrorDetail.raml
+  ErrorResponse:         !include types/ErrorResponse.raml
+  HealthAlive:           !include types/HealthAlive.raml
+  HealthReady:           !include types/HealthReady.raml
+  # HealthDependency is defined inline (not !include'd) because its
+  # `dependencies` array is self-referential — RAML fragments cannot
+  # `!include` themselves without triggering a cyclic-reference error.
+  # Declaring it here in the `types:` scope lets the recursion resolve
+  # by type name.
+  HealthDependency:
+    displayName: Health Dependency
+    description: |
+      Health status of a single downstream dependency this API relies on.
+      Emitted as an element of `HealthReady.dependencies[]`.
+
+      When the dependency is itself an API that exposes `/ready`, its own
+      downstream dependencies are nested under the optional `dependencies`
+      array so consumers of the top-level `/ready` can see the full chain
+      in one call. Leaf dependencies (databases, message brokers, SAP)
+      omit it.
+    type: object
+    additionalProperties: false
+    properties:
+      name:
+        displayName: Name
+        description: Human-readable name of the dependency (e.g. `SAP`, `Database`).
+        type: string
+        example: Database
+      status:
+        displayName: Status
+        description: Result of the most recent shallow health check.
+        type: string
+        enum: [UP, DOWN]
+        example: UP
+      dependencies:
+        displayName: Dependencies
+        description: |
+          When this dependency is itself an API exposing `/ready`, its own
+          downstream dependencies are nested here. Absent for leaf deps.
+        type: array
+        required: false
+        items: HealthDependency
+
+/products:
+  displayName: Products
+  description: |
+    Product master records held in SAP and mirrored in the `ecommerce_sap`
+    MySQL schema. Field names on this API follow the canonical DB shape in
+    camelCase — Process APIs are responsible for renaming to consumer-facing
+    vocabulary.
+  is: [correlatable, hasErrors]
+
+  get:
+    displayName: List Products
+    description: |
+      Returns a paginated list of product master records. Supports filtering
+      by category, brand, and active status. Results are sorted by
+      `productId` ascending unless overridden.
+    is: [paginated]
+    queryParameters:
+      category:
+        description: Filter by exact `productCategory` value (e.g. `Television`).
+        type: string
+        required: false
+        example: Television
+      brand:
+        description: Filter by exact `brand` value (case-sensitive).
+        type: string
+        required: false
+        example: Sony
+      isActive:
+        description: Filter by active flag. Omit to return both active and inactive.
+        type: boolean
+        required: false
+        example: true
+      sortBy:
+        description: Field to sort by.
+        type: string
+        enum: [productId, productDescription, unitPrice, createdAt, updatedAt]
+        default: productId
+        required: false
+      sortOrder:
+        description: Sort direction.
+        type: string
+        enum: [ASC, DESC]
+        default: ASC
+        required: false
+    responses:
+      200:
+        description: |
+          Product list returned successfully. Body is a flat JSON array of
+          `Product` records; pagination metadata is carried in response
+          headers.
+        headers:
+          X-Total-Count:
+            description: Total number of items matching the filter across all pages.
+            type: integer
+            minimum: 0
+            example: 12
+          X-Offset:
+            description: Zero-based offset used to build this page.
+            type: integer
+            minimum: 0
+            example: 0
+          X-Limit:
+            description: Maximum items per page used to build this page.
+            type: integer
+            minimum: 1
+            example: 50
+        body:
+          application/json:
+            type: Product[]
+            example: !include examples/Product-list-example.json
+
+  post:
+    displayName: Create Product
+    description: |
+      Creates a new product record in SAP. The caller may omit `productId`;
+      when absent, the backend `trg_products_before_insert` trigger assigns
+      the next `PROD-XXXXXX` identifier. Callers may supply an explicit
+      `productId` for imports and migrations — supplying a duplicate returns
+      `409 Conflict`.
+    body:
+      application/json:
+        type: ProductCreateRequest
+        example: !include examples/ProductCreateRequest-example.json
+    responses:
+      201:
+        description: Product created. `Location` header points to the new resource.
+        headers:
+          Location:
+            description: Absolute URI of the newly created product.
+            type: string
+            example: /catalog-products-sap/v1/products/PROD-000013
+        body:
+          application/json:
+            type: Product
+            example: !include examples/Product-example.json
+
+  /{productId}:
+    displayName: Product by ID
+    description: A single product record identified by its SAP master `productId`.
+    uriParameters:
+      productId:
+        description: SAP master product identifier. Format `PROD-<6 digits>`.
+        type: string
+        pattern: '^PROD-[0-9]{6}$'
+        example: PROD-000001
+    is: [correlatable, hasErrors]
+
+    get:
+      displayName: Get Product
+      description: Returns the product record for the given `productId`.
+      responses:
+        200:
+          description: Product returned successfully.
+          body:
+            application/json:
+              type: Product
+              example: !include examples/Product-example.json
+        404:
+          description: No product exists for the supplied `productId`.
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/ErrorResponse-CTLG-RES-001.json
+
+    put:
+      displayName: Replace Product
+      description: |
+        Full replace of the product record. All mutable fields must be supplied;
+        omitted fields are cleared. Use PATCH when only some fields are changing.
+      body:
+        application/json:
+          type: ProductUpdateRequest
+          example: !include examples/ProductUpdateRequest-example.json
+      responses:
+        200:
+          description: Product replaced successfully.
+          body:
+            application/json:
+              type: Product
+              example: !include examples/Product-example.json
+        404:
+          description: No product exists for the supplied `productId`.
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/ErrorResponse-CTLG-RES-001.json
+
+    patch:
+      displayName: Update Product
+      description: |
+        Partial update of a product record. Only supplied fields are changed.
+        Every field on the payload is optional; sending an empty object is a
+        no-op and returns the current record.
+      body:
+        application/json:
+          type: ProductPatchRequest
+          example: !include examples/ProductPatchRequest-example.json
+      responses:
+        200:
+          description: Product updated successfully.
+          body:
+            application/json:
+              type: Product
+              example: !include examples/Product-example.json
+        404:
+          description: No product exists for the supplied `productId`.
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/ErrorResponse-CTLG-RES-001.json
+
+    delete:
+      displayName: Deactivate Product
+      description: |
+        Soft-deletes the product by setting `isActive` to `false`. The row is
+        retained in SAP for audit and historical order lookups. Hard delete
+        is not supported through this API.
+      responses:
+        204:
+          description: Product deactivated successfully. No response body.
+        404:
+          description: No product exists for the supplied `productId`.
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/ErrorResponse-CTLG-RES-001.json
+
+/alive:
+  displayName: Liveness Probe
+  description: |
+    Liveness probe for functional monitoring. Returns `200 OK` whenever the
+    application process is running. Does not exercise any downstream
+    dependency — use `/ready` for dependency-aware health.
+  securedBy: [null]
+
+  get:
+    displayName: Check Liveness
+    description: Returns the app identity, runtime, and current UTC timestamp.
+    responses:
+      200:
+        description: The application process is alive.
+        body:
+          application/json:
+            type: HealthAlive
+            example: !include examples/HealthAlive-example.json
+
+/ready:
+  displayName: Readiness Probe
+  description: |
+    Readiness probe for functional monitoring. Runs a shallow health check
+    against the sole downstream dependency this API relies on — SAP — and
+    reports an aggregated status.
+
+    In this demo, the SAP dependency is simulated by the `ecommerce_sap`
+    MySQL schema on the demo EC2 host; the readiness check pings the DB
+    and reports the result under the `SAP` dependency name.
+
+    Status semantics:
+      - `OK` — SAP is `UP`. HTTP `200`.
+      - `OFFLINE` — SAP is `DOWN`. HTTP `503` so the orchestrator removes
+        the pod from load-balancer rotation.
+      - `DEGRADED` — reserved for future multi-dependency versions of this
+        API. Not emitted at v1 because a single dependency can only be UP
+        or DOWN.
+  securedBy: [null]
+
+  get:
+    displayName: Check Readiness
+    description: |
+      Runs a shallow health check against the SAP dependency and returns
+      the aggregated status.
+    responses:
+      200:
+        description: Overall status is `OK` — SAP is reachable.
+        body:
+          application/json:
+            type: HealthReady
+            example: !include examples/HealthReady-ok-example.json
+      503:
+        description: |
+          Overall status is `OFFLINE` — SAP is unreachable and the API
+          cannot serve business requests.
+        body:
+          application/json:
+            type: HealthReady
+            example: !include examples/HealthReady-offline-example.json

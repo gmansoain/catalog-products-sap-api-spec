@@ -1,0 +1,65 @@
+#%RAML 1.0 DataType
+displayName: Product Update Request
+description: |
+  Payload for a full replace (PUT) of a product record. Every mutable field
+  must be supplied; omitted fields are cleared. `productId`, `createdAt`,
+  and `updatedAt` are server-managed and must not be sent.
+type: object
+additionalProperties: false
+properties:
+  productDescription:
+    displayName: Product Description
+    type: string
+    minLength: 1
+    maxLength: 200
+    example: Sony Playstation 5 Slim
+  productCategory:
+    displayName: Product Category
+    type: !include ProductCategory.raml
+    example: Games Console
+  imagePath:
+    displayName: Image Path
+    type: string
+    minLength: 1
+    maxLength: 500
+    example: images/playstation_5_slim.png
+  unitPrice:
+    displayName: Unit Price
+    type: number
+    format: double
+    minimum: 0
+    example: 449.99
+  currency:
+    displayName: Currency
+    description: ISO 4217 currency code. Storefront base currency is `EUR`.
+    type: string
+    pattern: '^[A-Z]{3}$'
+    example: EUR
+  brand:
+    displayName: Brand
+    type: string
+    maxLength: 50
+    required: false
+    example: Sony
+  longDescription:
+    displayName: Long Description
+    type: string
+    required: false
+    example: Slimmer redesign of the PS5 with a detachable disc drive.
+  weightKg:
+    displayName: Weight (kg)
+    type: number
+    format: double
+    minimum: 0
+    required: false
+    example: 3.2
+  warrantyMonths:
+    displayName: Warranty (months)
+    type: integer
+    minimum: 0
+    required: false
+    example: 12
+  isActive:
+    displayName: Is Active
+    type: boolean
+    example: true

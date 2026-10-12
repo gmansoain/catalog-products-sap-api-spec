@@ -1,0 +1,14 @@
+#%RAML 1.0 DataType
+displayName: Product Category
+description: |
+  Product category as recorded on the SAP master. Values mirror the raw
+  `product_category` column in `ecommerce_sap.products` — Process APIs
+  transform these to their canonical `categoryCode` / `categoryLabel`
+  pair before exposing them to consumers.
+type: string
+enum:
+  - Games Console
+  - Smartphone
+  - Camera
+  - Television
+example: Television

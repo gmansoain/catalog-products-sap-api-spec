@@ -1,0 +1,47 @@
+#%RAML 1.0 DataType
+displayName: Error Detail
+description: |
+  Field-level or contextual breakdown of an error. One entry per
+  offending field, parameter, header, or logical constraint. See the
+  project-wide error-handling strategy (`docs/error-handling-strategy.md`
+  §3.2) for population rules.
+type: object
+additionalProperties: false
+properties:
+  fieldName:
+    displayName: Field Name
+    description: |
+      The field, parameter, or header at fault. For body fields, uses
+      JSON-style dotted paths matching the request body's structure.
+    type: string
+    example: unitPrice
+  reason:
+    displayName: Reason
+    description: Human-readable explanation of why this field failed.
+    type: string
+    example: Must be a non-negative number.
+  expectedValue:
+    displayName: Expected Value
+    description: |
+      Documented or inferred expected shape — pattern name, enum
+      values, or numeric constraints. Optional.
+    type: string
+    required: false
+    example: "number >= 0"
+  actualValue:
+    displayName: Actual Value
+    description: |
+      What was received. Sanitize when the field may carry PII or
+      secrets. Optional.
+    type: string
+    required: false
+    example: "-5"
+  context:
+    displayName: Context
+    description: |
+      Where the problem lives — for example `Request body`, `URL path
+      parameter`, `Query parameter`, `HTTP request header`,
+      `Current resource state`, `Foreign key constraint ...`.
+    type: string
+    required: false
+    example: Request body

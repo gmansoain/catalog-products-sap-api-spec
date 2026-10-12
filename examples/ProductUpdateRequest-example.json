@@ -1,0 +1,12 @@
+{
+  "productDescription": "Sony Playstation 5 Slim",
+  "productCategory": "Games Console",
+  "imagePath": "images/playstation_5_slim.png",
+  "unitPrice": 449.99,
+  "currency": "EUR",
+  "brand": "Sony",
+  "longDescription": "Slimmer redesign of the PS5 with a detachable disc drive.",
+  "weightKg": 3.20,
+  "warrantyMonths": 12,
+  "isActive": true
+}

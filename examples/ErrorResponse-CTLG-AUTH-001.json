@@ -1,0 +1,7 @@
+{
+  "errorCategory": "AUTHENTICATION_ERROR",
+  "errorCode": "CTLG-AUTH-001",
+  "message": "Authentication required.",
+  "correlationId": "d0e1f2a3-b4c5-4678-3456-901234567890",
+  "timestamp": "2026-10-11T08:06:39Z"
+}

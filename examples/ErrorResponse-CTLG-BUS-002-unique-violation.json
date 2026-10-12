@@ -1,0 +1,15 @@
+{
+  "errorCategory": "BUSINESS_RULE_VIOLATION",
+  "errorCode": "CTLG-BUS-002",
+  "message": "Database constraint violation.",
+  "correlationId": "c5d6e7f8-a9b0-4123-8901-456789012345",
+  "timestamp": "2026-10-11T14:12:59Z",
+  "details": [
+    {
+      "fieldName": "productId",
+      "reason": "A product with this productId already exists.",
+      "actualValue": "PROD-000005",
+      "context": "Unique constraint on products.id"
+    }
+  ]
+}

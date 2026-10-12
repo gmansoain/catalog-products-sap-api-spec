@@ -1,0 +1,24 @@
+#%RAML 1.0 Trait
+displayName: Paginated
+description: |
+  Adds offset/limit pagination query parameters to a collection resource.
+  Response bodies are flat arrays; pagination metadata is carried in the
+  `X-Total-Count`, `X-Offset`, and `X-Limit` response headers.
+queryParameters:
+  offset:
+    displayName: Offset
+    description: Zero-based index of the first item to return.
+    type: integer
+    minimum: 0
+    default: 0
+    required: false
+    example: 0
+  limit:
+    displayName: Limit
+    description: Maximum number of items to return in a single page.
+    type: integer
+    minimum: 1
+    maximum: 200
+    default: 50
+    required: false
+    example: 50

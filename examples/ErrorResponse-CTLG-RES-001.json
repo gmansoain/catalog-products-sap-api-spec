@@ -1,0 +1,7 @@
+{
+  "errorCategory": "RESOURCE_NOT_FOUND",
+  "errorCode": "CTLG-RES-001",
+  "message": "Product PROD-000999 not found.",
+  "correlationId": "c9d0e1f2-a3b4-4567-2345-890123456789",
+  "timestamp": "2026-10-10T17:53:23Z"
+}
