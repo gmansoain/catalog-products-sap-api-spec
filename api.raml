@@ -1,6 +1,6 @@
 #%RAML 1.0
 title: Catalog Products SAP System API
-version: v1
+version: v2
 baseUri: http://{environment}.api.leno.com/catalog-products-sap/{version}
 baseUriParameters:
   environment:
@@ -189,7 +189,7 @@ types:
           Location:
             description: Absolute URI of the newly created product.
             type: string
-            example: /catalog-products-sap/v1/products/PROD-000013
+            example: /catalog-products-sap/v2/products/PROD-000013
         body:
           application/json:
             type: Product

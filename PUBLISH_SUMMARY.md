@@ -1,8 +1,13 @@
-# Publish Summary — catalog-products-sap-api v2.0.0 (pending publish)
+# Publish Summary — catalog-products-sap-api v2.0.1 (pending publish)
 
-**Generated:** 2026-10-12
+**Generated:** 2026-10-13
 **Prior release:** v1.0.0 (2026-09-19)
-**Breaking changes since v1.0.0:** See [`CHANGELOG.md`](./CHANGELOG.md) — error envelope refactored to the project-wide shape (`errorCategory`, `errorCode` in `CTLG-RES-001` format, `details[]` restructured, catalog of 14 codes). The `version` field in `exchange.json` is intentionally still `1.0.0`; bump to `2.0.0` at publish time.
+**Breaking changes since v1.0.0:** See [`CHANGELOG.md`](./CHANGELOG.md). Two breaking concerns in this publish:
+
+1. **Error envelope refactor** — new shape (`errorCategory`, `errorCode` in `CTLG-RES-001` format, `details[]` restructured, 14-code catalog). Response contract on every 4xx/5xx operation changes.
+2. **`isActive` removed from PUT/PATCH request bodies** — activation state is server-managed via `DELETE /products/{productId}` (deactivate) and the v2 reactivate operation. Payloads carrying `isActive` are rejected with 400 `CTLG-VAL-001`.
+
+**API path version bumps v1 → v2.** Design Center enforces alignment between the asset's major SemVer (`2.x.x`) and the `apiVersion` field — any 2.x asset must publish under `apiVersion: v2`. The RAML's `version:` field, the `exchange.json` `apiVersion` field, and the `baseUri` `{version}` substitution all now resolve to `v2`.
 
 ---
 
@@ -12,8 +17,9 @@
 |-------|-------|
 | **Asset Name** | catalog-products-sap-api |
 | **Display Name** | Catalog Products SAP System API |
-| **Version** | 2.0.0 (pending publish) |
-| **API Version** | v1 |
+| **Version** | 2.0.1 (pending publish) |
+| **API Version** | v2 |
+| **Base URL (prod)** | `http://api.leno.com/catalog-products-sap/v2` |
 | **Description** | System-layer adapter over the SAP ERP product master and its supporting MySQL persistence. Exposes canonical CRUD on `Product` records and functional-monitoring probes. |
 
 ---
@@ -41,8 +47,8 @@
 ## Files
 
 ### Spec root
-- `catalog-products-sap-api/api.raml` — main API specification
-- `catalog-products-sap-api/exchange.json` — Exchange metadata
+- `catalog-products-sap-api/api.raml` — main API specification (RAML `version: v2`)
+- `catalog-products-sap-api/exchange.json` — Exchange metadata (asset `2.0.1`, apiVersion `v2`)
 - `catalog-products-sap-api/CHANGELOG.md`
 - `catalog-products-sap-api/PUBLISH_SUMMARY.md`
 
@@ -59,10 +65,10 @@
 - `catalog-products-sap-api/types/Product.raml`
 - `catalog-products-sap-api/types/ProductCategory.raml`
 - `catalog-products-sap-api/types/ProductCreateRequest.raml`
-- `catalog-products-sap-api/types/ProductUpdateRequest.raml`
-- `catalog-products-sap-api/types/ProductPatchRequest.raml`
+- `catalog-products-sap-api/types/ProductUpdateRequest.raml` *(2.0.1 — isActive removed)*
+- `catalog-products-sap-api/types/ProductPatchRequest.raml` *(2.0.1 — isActive removed)*
 - `catalog-products-sap-api/types/ErrorResponse.raml`
-- `catalog-products-sap-api/types/ErrorDetail.raml` *(new in v2.0.0)*
+- `catalog-products-sap-api/types/ErrorDetail.raml` *(new in 2.0.0)*
 - `catalog-products-sap-api/types/HealthAlive.raml`
 - `catalog-products-sap-api/types/HealthReady.raml`
 
@@ -82,13 +88,13 @@
 - `catalog-products-sap-api/examples/Product-example.json`
 - `catalog-products-sap-api/examples/Product-list-example.json`
 - `catalog-products-sap-api/examples/ProductCreateRequest-example.json`
-- `catalog-products-sap-api/examples/ProductUpdateRequest-example.json`
-- `catalog-products-sap-api/examples/ProductPatchRequest-example.json`
+- `catalog-products-sap-api/examples/ProductUpdateRequest-example.json` *(2.0.1 — isActive removed)*
+- `catalog-products-sap-api/examples/ProductPatchRequest-example.json` *(2.0.1 — isActive removed)*
 - `catalog-products-sap-api/examples/HealthAlive-example.json`
 - `catalog-products-sap-api/examples/HealthReady-ok-example.json`
 - `catalog-products-sap-api/examples/HealthReady-offline-example.json`
 
-### Examples — error responses *(code-named catalogue, new in v2.0.0)*
+### Examples — error responses *(code-named catalogue, new in 2.0.0)*
 
 One file per `errorCode`. Codes with multiple triggers get one file per variant.
 
@@ -113,27 +119,40 @@ One file per `errorCode`. Codes with multiple triggers get one file per variant.
 - `catalog-products-sap-api/examples/ErrorResponse-CTLG-SYS-002.json`
 - `catalog-products-sap-api/examples/ErrorResponse-CTLG-UNK-001.json`
 
-**Removed in this refactor** (replaced by the code-named catalogue above):
+**Removed in 2.0.0** (replaced by the code-named catalogue above):
 - `ErrorResponse-400-example.json`, `ErrorResponse-401-example.json`, `ErrorResponse-403-example.json`, `ErrorResponse-404-example.json`, `ErrorResponse-409-example.json`, `ErrorResponse-500-example.json`, `ErrorResponse-503-example.json`
 
 ---
 
 ## anypoint-cli publish command
 
-Before running: bump the `version` field in `exchange.json` from `1.0.0` to `2.0.0`.
-
 ```bash
 anypoint-cli exchange asset upload \
   --classifier raml \
-  --apiVersion v1 \
+  --apiVersion v2 \
   --mainFile api.raml \
   --name "Catalog Products SAP System API" \
   --tags "system-api,sync,internal,stable,sla-silver,data-internal,auth-mulesoft-client-id" \
   --files "$(pwd)/catalog-products-sap-api" \
-  "${ANYPOINT_ORG_ID}/catalog-products-sap-api/2.0.0"
+  "${ANYPOINT_ORG_ID}/catalog-products-sap-api/2.0.1"
 ```
 
 Requires `ANYPOINT_USERNAME`, `ANYPOINT_PASSWORD`, and `ANYPOINT_ORG_ID` environment variables — supply them via your secrets manager, never inline.
+
+---
+
+## Deployment implications of the v1 → v2 path bump
+
+Per [`docs/versioning-strategy.md`](../docs/versioning-strategy.md) §3, a major API path version bump means a **new CloudHub app alongside the v1 app** — not an in-place redeploy. Expected deployment layout once v2 is live:
+
+```
+catalog-products-sap-api-v1-sandbox   ← deprecated (sunset date TBD)
+catalog-products-sap-api-v1-prod      ← deprecated
+catalog-products-sap-api-v2-sandbox   ← active
+catalog-products-sap-api-v2-prod      ← active
+```
+
+For this demo, the v1 app can be redeployed with the new RAML in-place during development; a proper side-by-side deployment is a demo-polish task for later.
 
 ---
 

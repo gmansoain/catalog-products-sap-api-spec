@@ -1,8 +1,8 @@
 {
   "main": "api.raml",
   "assetId": "catalog-products-sap-api",
-  "version": "1.0.0",
-  "apiVersion": "v1",
+  "version": "2.0.1",
+  "apiVersion": "v2",
   "name": "Catalog Products SAP System API",
   "classifier": "raml",
   "tags": [

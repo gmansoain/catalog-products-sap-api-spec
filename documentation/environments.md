@@ -6,10 +6,10 @@ Catalog Products SAP System API is available in the following environments. Each
 
 | Environment | Purpose | Base URL | Notes |
 |-------------|---------|----------|-------|
-| DEV | Active development | `http://dev.api.leno.com/catalog-products-sap/v1` | Backed by the shared demo `ecommerce_sap` schema; data may be reset without notice. |
-| SIT | System integration testing | `http://sit.api.leno.com/catalog-products-sap/v1` | Refreshed nightly from a SAP export snapshot. |
-| UAT | User acceptance | `http://uat.api.leno.com/catalog-products-sap/v1` | Production-like SAP tenant; refreshes on release cadence. |
-| PROD | Production | `http://api.leno.com/catalog-products-sap/v1` | Live SAP tenant; internal Mule consumers only. |
+| DEV | Active development | `http://dev.api.leno.com/catalog-products-sap/v2` | Backed by the shared demo `ecommerce_sap` schema; data may be reset without notice. |
+| SIT | System integration testing | `http://sit.api.leno.com/catalog-products-sap/v2` | Refreshed nightly from a SAP export snapshot. |
+| UAT | User acceptance | `http://uat.api.leno.com/catalog-products-sap/v2` | Production-like SAP tenant; refreshes on release cadence. |
+| PROD | Production | `http://api.leno.com/catalog-products-sap/v2` | Live SAP tenant; internal Mule consumers only. |
 
 Scheme is `http://` on every environment — this is a System API and TLS terminates at the API gateway. Consumers must call through the gateway, not directly.
 

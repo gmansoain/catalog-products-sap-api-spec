@@ -9,6 +9,7 @@ The major version of every release matches the API's `version` field (`v<major>`
 ## [Unreleased]
 
 ### Changed
+- **BREAKING:** `PUT /products/{productId}` and `PATCH /products/{productId}` request bodies no longer accept `isActive`. Activation state is managed by `DELETE /products/{productId}` (deactivate) and the v2 reactivate operation. Clients that previously sent `isActive` on PUT or PATCH will now receive `400 CTLG-VAL-001`.
 - `GET /products` now returns a flat JSON array of `Product` records. The previous `{ items, pagination }` envelope has been removed; pagination metadata moves to the `X-Total-Count`, `X-Offset`, and `X-Limit` response headers.
 - Base currency changed from `USD` to `EUR` — reflected in the `currency` field's default, examples, and description.
 
@@ -35,5 +36,6 @@ The major version of every release matches the API's `version` field (`v<major>`
 
 ---
 
-[Unreleased]: https://exchange.leno.com/catalog-products-sap-api/compare/v1.0.0...HEAD
+[Unreleased]: https://exchange.leno.com/catalog-products-sap-api/compare/v2.0.1...HEAD
+[2.0.1]: https://exchange.leno.com/catalog-products-sap-api/releases/tag/v2.0.1
 [1.0.0]: https://exchange.leno.com/catalog-products-sap-api/releases/tag/v1.0.0

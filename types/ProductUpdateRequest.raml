@@ -2,8 +2,13 @@
 displayName: Product Update Request
 description: |
   Payload for a full replace (PUT) of a product record. Every mutable field
-  must be supplied; omitted fields are cleared. `productId`, `createdAt`,
-  and `updatedAt` are server-managed and must not be sent.
+  must be supplied. `productId`, `createdAt`, and `updatedAt` are
+  server-managed and must not be sent. `isActive` is deliberately not part
+  of this payload — activation state is managed by the dedicated
+  `DELETE /products/{productId}` (deactivate) and (v2) reactivate
+  operations, so a PUT cannot accidentally reactivate a soft-deleted
+  product. Payloads containing `isActive` are rejected with 400
+  `CTLG-VAL-001` because `additionalProperties: false`.
 type: object
 additionalProperties: false
 properties:
@@ -59,7 +64,3 @@ properties:
     minimum: 0
     required: false
     example: 12
-  isActive:
-    displayName: Is Active
-    type: boolean
-    example: true

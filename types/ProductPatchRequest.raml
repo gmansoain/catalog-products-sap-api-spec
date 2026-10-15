@@ -4,7 +4,11 @@ description: |
   Payload for a partial update (PATCH) of a product record. Every field is
   optional — only fields present in the payload are changed. Sending an empty
   object is a no-op and returns the current record. `productId`, `createdAt`,
-  and `updatedAt` are server-managed and must not be sent.
+  and `updatedAt` are server-managed and must not be sent. `isActive` is
+  deliberately not part of this payload — activation state is managed by the
+  dedicated `DELETE /products/{productId}` (deactivate) and (v2) reactivate
+  operations. Payloads containing `isActive` are rejected with 400
+  `CTLG-VAL-001` because `additionalProperties: false`.
 type: object
 additionalProperties: false
 properties:
@@ -56,7 +60,3 @@ properties:
     type: integer
     minimum: 0
     example: 12
-  isActive?:
-    displayName: Is Active
-    type: boolean
-    example: false
