@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-10-15
+
+### Changed
+- Error envelope assets (envelope datatype, detail datatype, response trait, example payloads) extracted into the shared Exchange library `98b7f48b-6753-4ba8-bcf3-7c0fb76bb6f2:ecommerce-common-errors:1.0.0`. `api.raml` consumes the library via `uses: errors: …ecommerce-common-errors.raml`; `hasErrors` is applied as `errors.hasErrors`; `ErrorResponse` and `ErrorDetail` are aliased to `errors.ErrorResponse` / `errors.ErrorDetail` in the top-level `types:` block.
+- `securitySchemes/mulesoft-client-id.raml` now `uses:` the shared library; type references switched from local `!include` to `errors.ErrorResponse`; 401/403 examples inlined as YAML values.
+- Per-method 404 overrides on `/products/{productId}` (GET/PUT/PATCH/DELETE) now inline the example value (same payload as the fragment's `ErrorResponse-CTLG-RES-001.json`) instead of `!include`-ing an inner-dependency file — complies with Design Center library-encapsulation rules.
+- `exchange.json` declares the dependency on `ecommerce-common-errors@1.0.0`.
+
+### Removed
+- Local copies of the error assets, now owned by the shared library: `types/ErrorResponse.raml`, `types/ErrorDetail.raml`, `traits/has-errors.raml`, and all 20 `examples/ErrorResponse-CTLG-*.json`.
+
+### Not changed (contract-stable)
+- Envelope shape, error codes, HTTP-status mapping, response descriptions, operations, and all other types are byte-identical to `2.0.1`. This release is a packaging refactor; consumers see the same API.
+
+## [2.0.1] - previously released
+
 ### Changed (BREAKING)
 - Error envelope refactored to align with the project-wide error-handling strategy (`docs/error-handling-strategy.md`). **Next publish: `2.0.1` with API path version bumped from `v1` to `v2`** (Design Center enforces alignment between asset major version and `apiVersion`, so any `2.x.x` asset requires the API path to move from `/v1/` to `/v2/`). Both are now set in `exchange.json` and `api.raml`.
   - New required field `errorCategory` (enum of ten long-form categories).

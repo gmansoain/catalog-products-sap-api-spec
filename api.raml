@@ -41,23 +41,25 @@ securitySchemes:
 
 securedBy: [mulesoftClientId]
 
+uses:
+  errors: exchange_modules/98b7f48b-6753-4ba8-bcf3-7c0fb76bb6f2/ecommerce-common-errors/1.0.0/ecommerce-common-errors.raml
+
 traits:
   correlatable: !include traits/correlatable.raml
   paginated: !include traits/paginated.raml
-  hasErrors: !include traits/has-errors.raml
 
 resourceTypes:
   collection: !include resourceTypes/collection.raml
   item: !include resourceTypes/item.raml
 
 types:
+  ErrorResponse: errors.ErrorResponse
+  ErrorDetail: errors.ErrorDetail
   Product:               !include types/Product.raml
   ProductCreateRequest:  !include types/ProductCreateRequest.raml
   ProductUpdateRequest:  !include types/ProductUpdateRequest.raml
   ProductPatchRequest:   !include types/ProductPatchRequest.raml
   ProductCategory:       !include types/ProductCategory.raml
-  ErrorDetail:           !include types/ErrorDetail.raml
-  ErrorResponse:         !include types/ErrorResponse.raml
   HealthAlive:           !include types/HealthAlive.raml
   HealthReady:           !include types/HealthReady.raml
   # HealthDependency is defined inline (not !include'd) because its
@@ -106,7 +108,7 @@ types:
     MySQL schema. Field names on this API follow the canonical DB shape in
     camelCase — Process APIs are responsible for renaming to consumer-facing
     vocabulary.
-  is: [correlatable, hasErrors]
+  is: [correlatable, errors.hasErrors]
 
   get:
     displayName: List Products
@@ -204,7 +206,7 @@ types:
         type: string
         pattern: '^PROD-[0-9]{6}$'
         example: PROD-000001
-    is: [correlatable, hasErrors]
+    is: [correlatable, errors.hasErrors]
 
     get:
       displayName: Get Product
@@ -220,8 +222,13 @@ types:
           description: No product exists for the supplied `productId`.
           body:
             application/json:
-              type: ErrorResponse
-              example: !include examples/ErrorResponse-CTLG-RES-001.json
+              type: errors.ErrorResponse
+              example:
+                errorCategory: RESOURCE_NOT_FOUND
+                errorCode: CTLG-RES-001
+                message: Product PROD-000999 not found.
+                correlationId: c9d0e1f2-a3b4-4567-2345-890123456789
+                timestamp: "2026-10-10T17:53:23Z"
 
     put:
       displayName: Replace Product
@@ -243,8 +250,13 @@ types:
           description: No product exists for the supplied `productId`.
           body:
             application/json:
-              type: ErrorResponse
-              example: !include examples/ErrorResponse-CTLG-RES-001.json
+              type: errors.ErrorResponse
+              example:
+                errorCategory: RESOURCE_NOT_FOUND
+                errorCode: CTLG-RES-001
+                message: Product PROD-000999 not found.
+                correlationId: c9d0e1f2-a3b4-4567-2345-890123456789
+                timestamp: "2026-10-10T17:53:23Z"
 
     patch:
       displayName: Update Product
@@ -267,8 +279,13 @@ types:
           description: No product exists for the supplied `productId`.
           body:
             application/json:
-              type: ErrorResponse
-              example: !include examples/ErrorResponse-CTLG-RES-001.json
+              type: errors.ErrorResponse
+              example:
+                errorCategory: RESOURCE_NOT_FOUND
+                errorCode: CTLG-RES-001
+                message: Product PROD-000999 not found.
+                correlationId: c9d0e1f2-a3b4-4567-2345-890123456789
+                timestamp: "2026-10-10T17:53:23Z"
 
     delete:
       displayName: Deactivate Product
@@ -283,8 +300,13 @@ types:
           description: No product exists for the supplied `productId`.
           body:
             application/json:
-              type: ErrorResponse
-              example: !include examples/ErrorResponse-CTLG-RES-001.json
+              type: errors.ErrorResponse
+              example:
+                errorCategory: RESOURCE_NOT_FOUND
+                errorCode: CTLG-RES-001
+                message: Product PROD-000999 not found.
+                correlationId: c9d0e1f2-a3b4-4567-2345-890123456789
+                timestamp: "2026-10-10T17:53:23Z"
 
 /alive:
   displayName: Liveness Probe

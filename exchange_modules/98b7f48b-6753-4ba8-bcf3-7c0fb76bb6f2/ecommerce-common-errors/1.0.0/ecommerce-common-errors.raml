@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+usage: |
+  Common error envelope, detail type, response trait, and example payloads
+  shared by every e-commerce API (System, Process, Experience). Error codes
+  use the business-domain prefix convention — see error-handling-strategy.md
+  §4 for the full taxonomy. Domain prefixes:
+    - CTLG — Catalog (products). v1.
+    - CART — Cart. v2 (Experience).
+    - ORDR — Orders. v2.
+    - INVT — Inventory. v3.
+  The envelope shape is defined in error-handling-strategy.md §3.1 and MUST
+  stay in lockstep with this library.
+types:
+  ErrorResponse: !include types/ErrorResponse.raml
+  ErrorDetail:   !include types/ErrorDetail.raml
+traits:
+  hasErrors: !include traits/has-errors.raml
